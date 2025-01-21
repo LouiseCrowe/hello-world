@@ -1,27 +1,39 @@
 # hello-world
 First GitHub Repository
 
-SELECT film.title, film.language_id, language.name FROM sakila.film 
-LEFT JOIN language ON film.language_id = language.language_id
-ORDER BY language.language_id desc;
+CREATCREATE TABLE `Product` (
+  `Product ID` INT,
+  `Product Name` VARCHAR2,
+  `Product Descrption` VARCHAR2,
+  `Price` FLOAT,
+  `Quantity` INT,
+  KEY `Primary` (`Product ID`)
+);
 
-EXERCISE 5
-This is the first edit I am going to commit.
+CREATE TABLE `Order` (
+  `Order ID` INT,
+  `Customer ID` INT,
+  `Product ID` INT,
+  `Price` FLOAT,
+  `Quantity` INT,
+  `Date` DATE,
+  KEY `Primary` (`Order ID`),
+  KEY `Foreign` (`Customer ID`, `Product ID`)
+);
 
--- 1. Join authors with titles based on au_id
-SELECT * FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id;
+CREATE TABLE `Customer` (
+  `Customer ID` INT,
+  `Customer First Name` VARCHAR2,
+  `Customer Last Name` VARCHAR2,
+  `Customer Email` VARCHAR2,
+  `Customer Address` VARCHAR2,
+  `Order ID` INT,
+  `Payment ID` INT,
+  KEY `Primary` (`Customer ID`),
+  KEY `Foreign` (`Order ID`, `Payment ID`)
+);
 
--- 2. Join titles with publishers and show only titles, price, and publisher name
-SELECT titles.title, titles.price, publishers.pub_name FROM titles JOIN publishers ON titles.pub_id = publishers.pub_id;
-
--- 3. Join authors with titles and show only authors' names and titles' names
-SELECT authors.au_fname, authors.au_lname, titles.title FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id JOIN titles ON titleauthor.title_id = titles.title_id;
-
--- 4. Join authors with titles and show only authors who have written more than one book
-SELECT authors.au_id, authors.au_fname, authors.au_lname FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id GROUP BY authors.au_id HAVING COUNT(titleauthor.title_id) > 1;
-
--- 5. Join titles with publishers and authors, and show only authors who have written books with a price greater than 20
-SELECT DISTINCT authors.au_id, authors.au_fname, authors.au_lname FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id JOIN titles ON titleauthor.title_id = titles.title_id WHERE titles.price > 20;
+au_id JOIN titles ON titleauthor.title_id = titles.title_id WHERE titles.price > 20;
 
 -- 6. Join authors with titles and publishers, and show only the authors who have written for more than one publisher
 SELECT authors.au_id, authors.au_fname, authors.au_lname FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id JOIN titles ON titleauthor.title_id = titles.title_id GROUP BY authors.au_id HAVING COUNT(DISTINCT titles.pub_id) > 1;
