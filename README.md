@@ -1,46 +1,56 @@
 # hello-world
 First GitHub Repository
 
-CREATCREATE TABLE `Product` (
-  `Product ID` INT,
-  `Product Name` VARCHAR2,
-  `Product Descrption` VARCHAR2,
-  `Price` FLOAT,
-  `Quantity` INT,
-  KEY `Primary` (`Product ID`)
+-- 1. Create a new database named 'myDatabase'
+CREATE DATABASE myDatabase;
+
+-- 2. Switch to the newly created database
+USE myDatabase;
+
+-- 3. Create a 'students' table with columns: student_id (numeric, primary key), first_name (string), last_name (string), date_of_birth (date)
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE
 );
 
-CREATE TABLE `Order` (
-  `Order ID` INT,
-  `Customer ID` INT,
-  `Product ID` INT,
-  `Price` FLOAT,
-  `Quantity` INT,
-  `Date` DATE,
-  KEY `Primary` (`Order ID`),
-  KEY `Foreign` (`Customer ID`, `Product ID`)
+-- 4. Create a 'courses' table with columns: course_id (numeric, primary key, auto increment), course_name (string), credit_hours (numeric)
+CREATE TABLE courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(50),
+    credit_hours INT
 );
 
-CREATE TABLE `Customer` (
-  `Customer ID` INT,
-  `Customer First Name` VARCHAR2,
-  `Customer Last Name` VARCHAR2,
-  `Customer Email` VARCHAR2,
-  `Customer Address` VARCHAR2,
-  `Order ID` INT,
-  `Payment ID` INT,
-  KEY `Primary` (`Customer ID`),
-  KEY `Foreign` (`Order ID`, `Payment ID`)
+-- 5. Add a unique constraint to the course_name column in the 'courses' table
+ALTER TABLE courses ADD CONSTRAINT UC_Course UNIQUE (course_name);
+
+-- 6. Create a 'professors' table with columns: professor_id (numeric, primary key, auto increment), first_name (string), last_name (string), subject (string)
+CREATE TABLE professors (
+    professor_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    subject VARCHAR(50)
 );
 
-au_id JOIN titles ON titleauthor.title_id = titles.title_id WHERE titles.price > 20;
+-- 7. Add a not null constraint to the subject column in the 'professors' table
+ALTER TABLE professors MODIFY subject VARCHAR(50) NOT NULL;
 
--- 6. Join authors with titles and publishers, and show only the authors who have written for more than one publisher
-SELECT authors.au_id, authors.au_fname, authors.au_lname FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id JOIN titles ON titleauthor.title_id = titles.title_id GROUP BY authors.au_id HAVING COUNT(DISTINCT titles.pub_id) > 1;
+-- 8. Create a 'classrooms' table with columns: classroom_id (numeric, primary key, auto increment), classroom_name (string), capacity (numeric)
+CREATE TABLE classrooms (
+    classroom_id INT AUTO_INCREMENT PRIMARY KEY,
+    classroom_name VARCHAR(50),
+    capacity INT
+);
 
--- 7. Join authors with titles and publishers, and show the total number of titles per publisher for each author
-SELECT authors.au_id, authors.au_fname, authors.au_lname, publishers.pub_name, COUNT(titles.title_id) FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id JOIN titles ON titleauthor.title_id = titles.title_id JOIN publishers ON titles.pub_id = publishers.pub_id GROUP BY authors.au_id, publishers.pub_id;
+-- 9. Add a check constraint to the capacity column in the 'classrooms' table such that capacity should be greater than 0
+ALTER TABLE classrooms ADD CONSTRAINT CHK_Classrooms_Capacity CHECK (capacity > 0);
 
--- 8. Join authors with titles and publishers, and show the average price of books per publisher for each author
-SELECT authors.au_id, authors.au_fname, authors.au_lname, publishers.pub_name, AVG(titles.price) FROM authors JOIN titleauthor ON authors.au_id = titleauthor.au_id JOIN titles ON titleauthor.title_id = titles.title_id JOIN publishers ON titles.pub_id = publishers.pub_id GROUP BY authors.au_id, publishers.pub_id;
-
+-- 10. Create a 'enrollment' table to track which student is taking which course. The table should have the following columns: enrollment_id (numeric, primary key, auto increment), student_id (reference to the students table), course_id (reference to the courses table)
+CREATE TABLE enrollment (
+    enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
